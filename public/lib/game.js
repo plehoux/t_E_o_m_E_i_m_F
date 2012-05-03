@@ -9,6 +9,7 @@
       this.initCanvas(selector);
       this.body = document.getElementsByTagName('body')[0];
       this.initKeyboard();
+      this.initTouches();
       this.points = new Array(0, 0, 0, 0);
       this.protagonists = (function() {
         var _results;
@@ -22,6 +23,43 @@
         return _this.update();
       }, 16);
     }
+
+    Game.prototype.initTouches = function() {
+      var _this = this;
+      this.body.addEventListener('touchstart', function(event) {
+        return _this.testTouches(event.touches);
+      });
+      return this.body.addEventListener('touchend', function(event) {
+        var protagonist, _i, _len, _ref;
+        _ref = _this.protagonists;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          protagonist = _ref[_i];
+          protagonist.produce = false;
+        }
+        return _this.testTouches(event.touches);
+      });
+    };
+
+    Game.prototype.testTouches = function(touches) {
+      var i, touch, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = touches.length; _i < _len; _i++) {
+        touch = touches[_i];
+        _results.push((function() {
+          var _ref, _results2;
+          _results2 = [];
+          for (i = 1, _ref = this.protagonists.length; 1 <= _ref ? i <= _ref : i >= _ref; 1 <= _ref ? i++ : i--) {
+            if (this.protagonists[i - 1].touched(touch.clientX, touch.clientY)) {
+              _results2.push(this.protagonists[i - 1].produce = true);
+            } else {
+              _results2.push(void 0);
+            }
+          }
+          return _results2;
+        }).call(this));
+      }
+      return _results;
+    };
 
     Game.prototype.initKeyboard = function() {
       var _this = this;
@@ -53,6 +91,10 @@
 
     Game.prototype.initCanvas = function(selector) {
       this.canvas = document.getElementById(selector);
+      this.canvas.addEventListener("touchmove", function(event) {
+        event.preventDefault();
+        return false;
+      });
       return this.ctx = this.canvas.getContext("2d");
     };
 

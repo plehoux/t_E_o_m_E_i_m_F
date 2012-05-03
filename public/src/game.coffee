@@ -3,11 +3,27 @@ class Game
     @initCanvas(selector)
     @body = document.getElementsByTagName('body')[0]
     @initKeyboard()
+    @initTouches()
     @points = new Array(0,0,0,0)
     @protagonists = (new Protagonist(num) for num in [1..4])
     setInterval(=>
         @update()
       ,16)
+
+  initTouches: ->
+    @body.addEventListener('touchstart',(event)=>   
+          @testTouches(event.touches)
+      )
+    @body.addEventListener('touchend',(event)=>
+          for protagonist in @protagonists
+            protagonist.produce = false
+          @testTouches(event.touches)
+      )
+
+  testTouches: (touches)->
+    for touch in touches
+      for i in [1..@protagonists.length]
+        @protagonists[i-1].produce = true if @protagonists[i-1].touched(touch.clientX,touch.clientY)
 
   initKeyboard: ->
     @body.addEventListener('keydown',(event)=>
@@ -27,6 +43,10 @@ class Game
 
   initCanvas: (selector)->
     @canvas = document.getElementById(selector)
+    @canvas.addEventListener("touchmove",(event)->
+        event.preventDefault()
+        return false
+      )
     @ctx = @canvas.getContext("2d")
 
   update: ->
