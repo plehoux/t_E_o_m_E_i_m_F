@@ -55,7 +55,7 @@ class Protagonist
   touched: (x,y)->
     x2 = Math.abs(@x-x)
     y2 = Math.abs(@y-y)
-    true if Math.sqrt(x2*x2+y2*y2) < @perceiveLife()
+    true if Math.sqrt(x2*x2+y2*y2) < (if @perceiveLife() < 100 then 100 else @perceiveLife())
 
   update: ->
     if @x != @anchorX or @y != @anchorY

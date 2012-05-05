@@ -46,7 +46,8 @@
               this.receiver.life -= this.force * 2;
               break;
             case "supply":
-              this.receiver.life += 200;
+              this.receiver.life += 300;
+              if (this.receiver.life > 1000) this.receiver.life = 1000;
           }
           return this.destroy = true;
         }

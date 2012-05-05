@@ -1,14 +1,41 @@
 class Game
   constructor:(selector) ->
-    @initCanvas(selector)
     @body = document.getElementsByTagName('body')[0]
-    @initKeyboard()
-    @initTouches()
-    @points = new Array(0,0,0,0)
+    @canvas = document.getElementById(selector)
+    @ids = 
+      logo    : document.getElementById('logo')
+      counter : document.getElementById('counter')
+    @initCanvas(@canvas)
     @protagonists = (new Protagonist(num) for num in [1..4])
+    @bot = true
     setInterval(=>
         @update()
       ,16)
+  
+  play: ->
+    @ids.logo.style.display = "none"
+    @points = new Array(0,0,0,0)
+    @bot = false
+    @reset()
+    @count = 3
+    @counter()
+
+
+  counter: ->
+    console.debug @ids.counter
+    @ids.counter.innerHTML = @count
+    setTimeout(=>
+        @count--
+        if @count > 0
+          @counter() 
+        else
+          @ids.counter.style.display = "none"
+          @start()
+      ,1000)
+
+  start: ->
+    @initKeyboard()
+    @initTouches()
 
   initTouches: ->
     @body.addEventListener('touchstart',(event)=>   
@@ -41,15 +68,21 @@ class Game
           when 90 then @protagonists[3].produce = false
       )
 
-  initCanvas: (selector)->
-    @canvas = document.getElementById(selector)
-    @canvas.addEventListener("touchmove",(event)->
+  updateBot: ->
+    if Math.random() > 0.5
+      for i in [1..@protagonists.length]
+        @protagonists[i-1].produce = false if Math.random() > Math.random() and @protagonists[i-1].produce
+        @protagonists[i-1].produce = true if Math.random() > Math.random() and !@protagonists[i-1].produce
+
+  initCanvas: ->
+    @body.addEventListener("touchmove",(event)->
         event.preventDefault()
         return false
       )
     @ctx = @canvas.getContext("2d")
 
   update: ->
+    @updateBot() if @bot
     @canvas.width =  window.innerWidth
     @canvas.height =  window.innerHeight
     #Protagonists
@@ -67,6 +100,7 @@ class Game
             p.attack(@findAntagonist(p))
       @draw()
     else
+      @points[@winner.id-1]++ unless @bot
       @reset()
     
   draw: ->
@@ -75,7 +109,6 @@ class Game
       protagonist.draw(@ctx)
   
   reset: ->
-    @points[@winner.id-1]++
     @protagonists = (new Protagonist(num) for num in [1..4])
     @winner = false
     @clear()

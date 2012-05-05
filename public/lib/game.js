@@ -6,11 +6,13 @@
     function Game(selector) {
       var num,
         _this = this;
-      this.initCanvas(selector);
       this.body = document.getElementsByTagName('body')[0];
-      this.initKeyboard();
-      this.initTouches();
-      this.points = new Array(0, 0, 0, 0);
+      this.canvas = document.getElementById(selector);
+      this.ids = {
+        logo: document.getElementById('logo'),
+        counter: document.getElementById('counter')
+      };
+      this.initCanvas(this.canvas);
       this.protagonists = (function() {
         var _results;
         _results = [];
@@ -19,10 +21,40 @@
         }
         return _results;
       })();
+      this.bot = true;
       setInterval(function() {
         return _this.update();
       }, 16);
     }
+
+    Game.prototype.play = function() {
+      this.ids.logo.style.display = "none";
+      this.points = new Array(0, 0, 0, 0);
+      this.bot = false;
+      this.reset();
+      this.count = 3;
+      return this.counter();
+    };
+
+    Game.prototype.counter = function() {
+      var _this = this;
+      console.debug(this.ids.counter);
+      this.ids.counter.innerHTML = this.count;
+      return setTimeout(function() {
+        _this.count--;
+        if (_this.count > 0) {
+          return _this.counter();
+        } else {
+          _this.ids.counter.style.display = "none";
+          return _this.start();
+        }
+      }, 1000);
+    };
+
+    Game.prototype.start = function() {
+      this.initKeyboard();
+      return this.initTouches();
+    };
 
     Game.prototype.initTouches = function() {
       var _this = this;
@@ -89,9 +121,26 @@
       });
     };
 
-    Game.prototype.initCanvas = function(selector) {
-      this.canvas = document.getElementById(selector);
-      this.canvas.addEventListener("touchmove", function(event) {
+    Game.prototype.updateBot = function() {
+      var i, _ref, _results;
+      if (Math.random() > 0.5) {
+        _results = [];
+        for (i = 1, _ref = this.protagonists.length; 1 <= _ref ? i <= _ref : i >= _ref; 1 <= _ref ? i++ : i--) {
+          if (Math.random() > Math.random() && this.protagonists[i - 1].produce) {
+            this.protagonists[i - 1].produce = false;
+          }
+          if (Math.random() > Math.random() && !this.protagonists[i - 1].produce) {
+            _results.push(this.protagonists[i - 1].produce = true);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
+    };
+
+    Game.prototype.initCanvas = function() {
+      this.body.addEventListener("touchmove", function(event) {
         event.preventDefault();
         return false;
       });
@@ -100,6 +149,7 @@
 
     Game.prototype.update = function() {
       var i, p, _len, _ref;
+      if (this.bot) this.updateBot();
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
       if (!this.winner) {
@@ -121,6 +171,7 @@
         }
         return this.draw();
       } else {
+        if (!this.bot) this.points[this.winner.id - 1]++;
         return this.reset();
       }
     };
@@ -139,7 +190,6 @@
 
     Game.prototype.reset = function() {
       var num;
-      this.points[this.winner.id - 1]++;
       this.protagonists = (function() {
         var _results;
         _results = [];

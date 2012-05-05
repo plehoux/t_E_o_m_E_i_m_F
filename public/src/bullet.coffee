@@ -29,7 +29,8 @@ class Bullet
           when "bullet"
             @receiver.life -= @force*2
           when "supply" 
-            @receiver.life += 200
+            @receiver.life += 300
+            @receiver.life = 1000 if @receiver.life > 1000
         @destroy = true
     else if @fragments.length == 0
       @fragments.push(new Fragment({x:@pos.x,y:@pos.y},@getAngle(),@force,i)) for i in [1..4] if @type == "bullet"

@@ -84,7 +84,9 @@
       var x2, y2;
       x2 = Math.abs(this.x - x);
       y2 = Math.abs(this.y - y);
-      if (Math.sqrt(x2 * x2 + y2 * y2) < this.perceiveLife()) return true;
+      if (Math.sqrt(x2 * x2 + y2 * y2) < (this.perceiveLife() < 100 ? 100 : this.perceiveLife())) {
+        return true;
+      }
     };
 
     Protagonist.prototype.update = function() {
