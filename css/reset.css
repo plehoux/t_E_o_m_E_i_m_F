@@ -1,0 +1,100 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
+
+body{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: 'Mate SC', serif;
+}
+
+a{
+  text-decoration: none;
+}
+
+div#content{
+  position:absolute;
+  width: 100%;
+  height: 100%;
+  /* flexbox, por favor */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-orient: horizontal;
+  box-pack: center;
+  box-align: center;
+}
+
+div#logo{
+  padding-top:90px;
+}
+
+hgroup h1{
+  font-size: 3em;
+  cursor:default;
+}
+
+hgroup h2{
+  font-size:1em;
+  text-align:right;
+  cursor:default;
+}
+
+hgroup h2 a{
+  color:#555;
+}
+
+a#play{
+  color:#000;
+  font-size:4em;
+  text-align:center;
+  margin:40px auto;
+  display:block;
+}
+
+div#counter{
+  padding-top:0px;
+  font-size:8em;
+  text-align:center;
+}
+
+@media screen and (max-width: 1024px) {
+  hgroup h1{
+    font-size: 2em;
+  }
+
+  hgroup h2{
+    font-size:0.9em;
+  }
+  a#play{
+    font-size:3em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  hgroup h1{
+    font-size: 1.5em;
+  }
+ 
+  div#content div{
+  padding-top:0px;
+  }
+
+  hgroup h2{
+    display:none;
+    font-size:0.5em;
+  }
+
+  canvas,a#play{
+    display:none;
+  }
+}
+
