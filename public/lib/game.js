@@ -4,7 +4,7 @@
   Game = (function() {
 
     function Game(selector) {
-      var num,
+      var num, protagonist, _i, _len, _ref,
         _this = this;
       this.body = document.getElementsByTagName('body')[0];
       this.canvas = document.getElementById(selector);
@@ -21,6 +21,16 @@
         }
         return _results;
       })();
+      this.positions = [];
+      _ref = this.protagonists;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        protagonist = _ref[_i];
+        this.positions.push({
+          x: protagonist.anchorX,
+          y: protagonist.anchorY,
+          counter: 0
+        });
+      }
       this.bot = true;
       setInterval(function() {
         return _this.update();
@@ -148,7 +158,7 @@
     };
 
     Game.prototype.update = function() {
-      var i, p, _len, _ref;
+      var i, p, position, _i, _len, _len2, _ref, _ref2, _results;
       if (this.bot) this.updateBot();
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
@@ -169,21 +179,41 @@
             }
           }
         }
-        return this.draw();
+        this.draw();
       } else {
         if (!this.bot) this.points[this.winner.id - 1]++;
-        return this.reset();
+        this.reset();
       }
+      _ref2 = this.positions;
+      _results = [];
+      for (_i = 0, _len2 = _ref2.length; _i < _len2; _i++) {
+        position = _ref2[_i];
+        if (position.counter > 0) {
+          _results.push(position.counter--);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     Game.prototype.draw = function() {
-      var protagonist, _i, _len, _ref, _results;
+      var position, protagonist, _i, _j, _len, _len2, _ref, _ref2, _results;
       this.clear();
       _ref = this.protagonists;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         protagonist = _ref[_i];
-        _results.push(protagonist.draw(this.ctx));
+        protagonist.draw(this.ctx);
+      }
+      _ref2 = this.positions;
+      _results = [];
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        position = _ref2[_j];
+        if (position.counter > 0) {
+          _results.push(this.ctx.fillText("WIN", position.x, position.y));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     };

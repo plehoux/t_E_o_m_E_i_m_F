@@ -7,6 +7,9 @@ class Game
       counter : document.getElementById('counter')
     @initCanvas(@canvas)
     @protagonists = (new Protagonist(num) for num in [1..4])
+    @positions = []
+    for protagonist in @protagonists
+      @positions.push({x:protagonist.anchorX,y:protagonist.anchorY,counter:0})
     @bot = true
     setInterval(=>
         @update()
@@ -19,7 +22,6 @@ class Game
     @reset()
     @count = 3
     @counter()
-
 
   counter: ->
     console.debug @ids.counter
@@ -102,11 +104,15 @@ class Game
     else
       @points[@winner.id-1]++ unless @bot
       @reset()
+    for position in @positions
+      position.counter-- if position.counter > 0
     
   draw: ->
     @clear()
     for protagonist in @protagonists
       protagonist.draw(@ctx)
+    for position in @positions
+      @ctx.fillText("WIN",position.x,position.y) if position.counter > 0
   
   reset: ->
     @protagonists = (new Protagonist(num) for num in [1..4])
@@ -144,7 +150,6 @@ class Game
     @ctx.arc(x, y, radius, 0, Math.PI*2, true)
     @ctx.closePath()
     @ctx.fill()
-
 
   drawCricleStroke: (x,y,radius,width,color = "#000")->
     @ctx.beginPath()
